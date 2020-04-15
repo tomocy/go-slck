@@ -1,10 +1,14 @@
 package slck
 
+import "net"
+
 type channel struct {
 	name string
 }
 
-type client struct{}
+type client struct {
+	conn net.Conn
+}
 
 type command struct {
 	kind       commandKind
