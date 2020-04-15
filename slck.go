@@ -152,6 +152,20 @@ func (c *Client) delete() error {
 
 type channelName string
 
+func (n channelName) validate() error {
+	if n == "" {
+		return fmt.Errorf("name is empty")
+	}
+	if n[0] != '#' {
+		return fmt.Errorf("name does not start with #")
+	}
+	if n[1:] == "" {
+		return fmt.Errorf("name exluding # is empty")
+	}
+
+	return nil
+}
+
 func (c Client) err(msg string) {
 	c.printf("%s %s\n", commandErr, msg)
 }
