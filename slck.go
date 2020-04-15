@@ -3,7 +3,8 @@ package slck
 import "net"
 
 type channel struct {
-	name string
+	name    string
+	members map[string]client
 }
 
 type client struct {
