@@ -181,4 +181,6 @@ const (
 	commandErr      cmdKind = "ERR"
 )
 
-type registerCmd struct{}
+type registerCmd struct {
+	client Client
+}
