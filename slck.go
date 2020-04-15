@@ -23,6 +23,11 @@ type client struct {
 	username string
 }
 
+func (c client) handle(cmd rawCommand) {
+	switch cmd.kind {
+	}
+}
+
 type command struct {
 	kind       commandKind
 	sender     string
