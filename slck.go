@@ -161,6 +161,10 @@ func (c *Client) handle(cmd rawCmd) {
 		if err := c.members(); err != nil {
 			c.err(fmt.Sprintf("failed to list members: %s", err))
 		}
+	case commandMessage:
+		if err := c.message(cmd.args); err != nil {
+			c.err(fmt.Sprintf("failed to send message: %s", err))
+		}
 	default:
 		c.err(fmt.Sprintf("unknown command: %s", cmd.kind))
 	}
@@ -250,6 +254,14 @@ func (c Client) members() error {
 	return nil
 }
 
+func (c Client) err(msg string) {
+	c.printf("%s %s\n", commandErr, msg)
+}
+
+func (c Client) printf(format string, as ...interface{}) {
+	fmt.Fprintf(c.conn, format, as...)
+}
+
 type channelName string
 
 func (n channelName) validate() error {
@@ -264,14 +276,6 @@ func (n channelName) validate() error {
 	}
 
 	return nil
-}
-
-func (c Client) err(msg string) {
-	c.printf("%s %s\n", commandErr, msg)
-}
-
-func (c Client) printf(format string, as ...interface{}) {
-	fmt.Fprintf(c.conn, format, as...)
 }
 
 type Command interface {
@@ -312,6 +316,31 @@ const (
 	commandOK       cmdKind = "OK"
 	commandErr      cmdKind = "ERR"
 )
+
+type rawMessageCmd struct {
+	target string
+	len    int
+	body   []byte
+}
+
+func (c *rawMessageCmd) Scan(state fmt.ScanState, _ rune) error {
+	if _, err := fmt.Fscanf(state, "%s %d\n", &c.target, &c.len); err != nil {
+		return fmt.Errorf("failed to scan target or length: %w", err)
+	}
+
+	var n int
+	body, err := state.Token(false, func(rune) bool {
+		defer func() { n++ }()
+		return n < c.len
+	})
+	if err != nil {
+		return err
+	}
+	c.body = make([]byte, len(body))
+	copy(c.body, body)
+
+	return nil
+}
 
 type registerCmd struct {
 	client Client
