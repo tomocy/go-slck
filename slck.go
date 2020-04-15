@@ -350,3 +350,11 @@ type membersCmd struct {
 }
 
 func (c membersCmd) command() {}
+
+type messageInChannel struct {
+	sender  Client
+	channel string
+	body    []byte
+}
+
+func (c messageInChannel) comman() {}
