@@ -1,3 +1,5 @@
 package tcp
 
-type app struct{}
+type app struct {
+	addr string
+}
