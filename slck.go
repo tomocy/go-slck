@@ -139,6 +139,10 @@ func (c *Client) setUsername(name string) error {
 }
 
 func (c *Client) delete() error {
+	c.cmds <- deleteCmd{
+		client: *c,
+	}
+
 	c.username = ""
 
 	return nil
