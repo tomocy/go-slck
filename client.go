@@ -189,6 +189,11 @@ func (c Client) message(args []byte) error {
 		return fmt.Errorf("failed to scan command: %w", err)
 	}
 
+	m, err := c.member()
+	if err != nil {
+		return fmt.Errorf("failed to get current context: %w", err)
+	}
+
 	if cmd.target[0] == '#' {
 		ch := channelName(cmd.target)
 		if err := ch.validate(); err != nil {
@@ -196,8 +201,8 @@ func (c Client) message(args []byte) error {
 		}
 
 		c.cmds <- messageInChannelCmd{
-			sender:  c,
-			channel: string(ch),
+			sender:  m,
+			channel: ch,
 			body:    cmd.body,
 		}
 

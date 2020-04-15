@@ -108,8 +108,8 @@ type membersCmd struct {
 func (c membersCmd) command() {}
 
 type messageInChannelCmd struct {
-	sender  Client
-	channel string
+	sender  member
+	channel channelName
 	body    []byte
 }
 

@@ -105,13 +105,13 @@ func (w *workplace) listMembers(m member) {
 	}
 }
 
-func (w *workplace) sendMessageInChannel(s Client, chName string, body []byte) {
+func (w *workplace) sendMessageInChannel(sender member, chName channelName, body []byte) {
 	ch, ok := w.channels[chName]
 	if !ok {
 		return
 	}
 
-	ch.broadcast(s.username, body)
+	ch.broadcast(sender, body)
 }
 
 func (w *workplace) sendDirectMessage(s Client, r string, body []byte) {
