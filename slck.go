@@ -196,3 +196,5 @@ type registerCmd struct {
 }
 
 func (c registerCmd) command() {}
+
+type deleteCmd struct{}
