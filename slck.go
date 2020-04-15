@@ -2,6 +2,8 @@ package slck
 
 type commandKind string
 
+type command struct{}
+
 const (
 	commandRegister commandKind = "REGISTER"
 	commandJoin     commandKind = "JOIN"
