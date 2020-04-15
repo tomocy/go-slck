@@ -1,8 +1,10 @@
 package slck
 
-type commandKind string
+type command struct {
+	kind commandKind
+}
 
-type command struct{}
+type commandKind string
 
 const (
 	commandRegister commandKind = "REGISTER"
