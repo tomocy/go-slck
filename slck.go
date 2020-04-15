@@ -1,8 +1,9 @@
 package slck
 
 type command struct {
-	kind   commandKind
-	sender string
+	kind       commandKind
+	sender     string
+	receipient string
 }
 
 type commandKind string
