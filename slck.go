@@ -324,3 +324,9 @@ type channelsCmd struct {
 }
 
 func (c channelsCmd) command() {}
+
+type membersCmd struct {
+	client Client
+}
+
+func (c membersCmd) command() {}
