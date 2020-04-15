@@ -56,6 +56,22 @@ func (c Client) handle(cmd rawCommand) {
 	}
 }
 
+func (c *Client) setUsername(name string) error {
+	if name == "" {
+		return fmt.Errorf("username is empty")
+	}
+	if name[0] != '@' {
+		return fmt.Errorf("username does not start with @")
+	}
+	if name[1:] == "" {
+		return fmt.Errorf("username expluding @ is empty")
+	}
+
+	c.username = name
+
+	return nil
+}
+
 func (c Client) err(msg string) {
 	c.printf("%s %s\n", commandErr, msg)
 }
