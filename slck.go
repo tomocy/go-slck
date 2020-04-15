@@ -254,6 +254,29 @@ func (c Client) members() error {
 	return nil
 }
 
+func (c Client) message(args []byte) error {
+	var cmd rawMessageCmd
+	if _, err := fmt.Sscan(string(args), &cmd); err != nil {
+		return fmt.Errorf("failed to scan command: %w", err)
+	}
+
+	if cmd.target[0] != '#' {
+		return fmt.Errorf("invalid target format: format should start either @ or #: %s", cmd.target)
+	}
+
+	ch := channelName(cmd.target)
+	if err := ch.validate(); err != nil {
+		return fmt.Errorf("invalid channel name: %w", err)
+	}
+
+	c.cmds <- messageInChannel{
+		sender:  c,
+		channel: string(ch),
+	}
+
+	return nil
+}
+
 func (c Client) err(msg string) {
 	c.printf("%s %s\n", commandErr, msg)
 }
@@ -324,17 +347,17 @@ type rawMessageCmd struct {
 }
 
 func (c *rawMessageCmd) Scan(state fmt.ScanState, _ rune) error {
-	if _, err := fmt.Fscanf(state, "%s %d\n", &c.target, &c.len); err != nil {
+	if _, err := fmt.Fscanf(state, "%s %d ", &c.target, &c.len); err != nil {
 		return fmt.Errorf("failed to scan target or length: %w", err)
 	}
 
 	var n int
-	body, err := state.Token(false, func(rune) bool {
+	body, err := state.Token(false, func(r rune) bool {
 		defer func() { n++ }()
 		return n < c.len
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse body: %w", err)
 	}
 	c.body = make([]byte, len(body))
 	copy(c.body, body)
@@ -386,4 +409,4 @@ type messageInChannel struct {
 	body    []byte
 }
 
-func (c messageInChannel) comman() {}
+func (c messageInChannel) command() {}
