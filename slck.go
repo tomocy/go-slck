@@ -150,6 +150,8 @@ func (c *Client) delete() error {
 	return nil
 }
 
+type channelName string
+
 func (c Client) err(msg string) {
 	c.printf("%s %s\n", commandErr, msg)
 }
