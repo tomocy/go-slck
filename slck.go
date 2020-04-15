@@ -52,11 +52,15 @@ func (c Client) Listen(ctx context.Context) {
 	}
 }
 
-func (c Client) handle(cmd rawCommand) {
+func (c *Client) handle(cmd rawCommand) {
 	switch cmd.kind {
 	case commandRegister:
 		if err := c.register(cmd.args); err != nil {
 			c.err(fmt.Sprintf("failed to register: %s", err))
+		}
+	case commandDelete:
+		if err := c.delete(); err != nil {
+			c.err(fmt.Sprintf("failed to delete: %s", err))
 		}
 	default:
 		c.err(fmt.Sprintf("unknown command: %s", cmd.kind))
@@ -87,6 +91,14 @@ func (c *Client) setUsername(name string) error {
 	}
 
 	c.username = name
+
+	return nil
+}
+
+func (c *Client) delete() error {
+	c.deleted <- *c
+
+	c.username = ""
 
 	return nil
 }
@@ -131,6 +143,7 @@ type commandKind string
 
 const (
 	commandRegister commandKind = "REGISTER"
+	commandDelete   commandKind = "DELETE"
 	commandJoin     commandKind = "JOIN"
 	commandLeave    commandKind = "LEAVE"
 	commandChannels commandKind = "CHANNELS"
