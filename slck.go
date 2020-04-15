@@ -264,6 +264,9 @@ type joinCmd struct {
 
 func (c joinCmd) command() {}
 
-type leaveCmd struct{}
+type leaveCmd struct {
+	client  Client
+	channel string
+}
 
 func (c leaveCmd) command() {}
