@@ -315,6 +315,10 @@ func (c Client) message(args []byte) error {
 	return fmt.Errorf("invalid target format: format should start either @ or #: %s", cmd.target)
 }
 
+func (c Client) ok() {
+	c.printf("%s\n", commandOK)
+}
+
 func (c Client) err(msg string) {
 	c.printf("%s %s\n", commandErr, msg)
 }
