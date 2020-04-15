@@ -7,6 +7,8 @@ import (
 	"net"
 )
 
+type workplace struct{}
+
 type channel struct {
 	name    string
 	members map[string]Client
