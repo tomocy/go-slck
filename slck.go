@@ -10,6 +10,7 @@ import (
 func NewWorkplace(cmds <-chan Command) *workplace {
 	return &workplace{
 		members: make(map[string]Client),
+		cmds:    cmds,
 	}
 }
 
@@ -24,6 +25,11 @@ func (w workplace) Listen(ctx context.Context) {
 		select {
 		case <-ctx.Done():
 			return
+		case cmd := <-w.cmds:
+			switch cmd := cmd.(type) {
+			case registerCmd:
+				w.register(cmd.client)
+			}
 		}
 	}
 }
