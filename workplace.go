@@ -114,13 +114,17 @@ func (w *workplace) sendMessageInChannel(sender member, chName channelName, body
 	ch.broadcast(sender, body)
 }
 
-func (w *workplace) sendDirectMessage(s Client, r string, body []byte) {
-	m, ok := w.members[r]
+func (w *workplace) sendDirectMessage(sender member, recipientName username, body []byte) {
+	recipient, ok := w.members[recipientName]
 	if !ok {
 		return
 	}
 
-	fmt.Fprintf(m.conn, "%s: %s\n", s.username, body)
+	msg := msg{
+		sender:  sender,
+		subject: recipient,
+	}
+	msg.Write(body)
 }
 
 func (w *workplace) err(subject member, body string) {

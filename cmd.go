@@ -116,8 +116,8 @@ type messageInChannelCmd struct {
 func (c messageInChannelCmd) command() {}
 
 type directMessageCmd struct {
-	sender     Client
-	receipient string
+	sender     member
+	receipient username
 	body       []byte
 }
 

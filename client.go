@@ -216,8 +216,8 @@ func (c Client) message(args []byte) error {
 		}
 
 		c.cmds <- directMessageCmd{
-			sender:     c,
-			receipient: string(uname),
+			sender:     m,
+			receipient: uname,
 			body:       cmd.body,
 		}
 
