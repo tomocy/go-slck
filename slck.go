@@ -29,6 +29,8 @@ func (w workplace) Listen(ctx context.Context) {
 			return
 		case c := <-w.registeredClients:
 			w.register(c)
+		case c := <-w.deletedClients:
+			w.delete(c)
 		}
 	}
 }
@@ -40,6 +42,13 @@ func (w *workplace) register(c Client) {
 	}
 
 	w.members[c.username] = c
+}
+
+func (w *workplace) delete(cli Client) {
+	delete(w.members, cli.username)
+	for _, c := range w.channels {
+		delete(c.members, cli.username)
+	}
 }
 
 type channel struct {
