@@ -80,7 +80,7 @@ func (c *rawCommand) Scan(state fmt.ScanState, _ rune) error {
 		return fmt.Errorf("failed to parse command: %w", err)
 	}
 	args, err := state.Token(true, func(r rune) bool {
-		return true
+		return r != '\n'
 	})
 	if err != nil && err != io.EOF {
 		return fmt.Errorf("failed to parse args: %w", err)
