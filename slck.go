@@ -26,8 +26,9 @@ func NewClient(conn net.Conn) *client {
 }
 
 type client struct {
-	conn     net.Conn
-	username string
+	conn       net.Conn
+	username   string
+	registered chan<- client
 }
 
 func (c client) Listen(ctx context.Context) {
