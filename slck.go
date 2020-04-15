@@ -10,6 +10,7 @@ import (
 type workplace struct {
 	channels map[string]channel
 	members  map[string]Client
+	commands <-chan command
 }
 
 type channel struct {
