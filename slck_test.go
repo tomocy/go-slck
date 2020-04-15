@@ -9,7 +9,7 @@ func TestRawCommand_Scan(t *testing.T) {
 	kind, args := commandJoin, []byte("alice")
 	src := fmt.Sprintf("%s %s", kind, args)
 
-	var cmd rawCommand
+	var cmd rawCmd
 	if _, err := fmt.Sscan(src, &cmd); err != nil {
 		t.Errorf("should have scanned: %s", err)
 		return
