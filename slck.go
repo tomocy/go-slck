@@ -2,6 +2,7 @@ package slck
 
 import (
 	"fmt"
+	"io"
 	"net"
 )
 
@@ -30,8 +31,24 @@ type command struct {
 }
 
 type rawCommand struct {
-	kind string
+	kind commandKind
 	args []byte
+}
+
+func (c *rawCommand) Scan(state fmt.ScanState, _ rune) error {
+	if _, err := fmt.Fscanf(state, "%s", &c.kind); err != nil {
+		return fmt.Errorf("failed to parse command: %w", err)
+	}
+	args, err := state.Token(true, func(r rune) bool {
+		return true
+	})
+	if err != nil && err != io.EOF {
+		return fmt.Errorf("failed to parse args: %w", err)
+	}
+	c.args = make([]byte, len(args))
+	copy(c.args, args)
+
+	return nil
 }
 
 type commandKind string
