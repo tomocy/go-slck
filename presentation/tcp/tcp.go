@@ -51,6 +51,7 @@ func (a *app) parseFlags(args []string) error {
 }
 
 func (a app) listenAndServe(ctx context.Context) error {
+	a.printf("listen and serve on %s\n", a.addr)
 	lis, err := net.Listen("tcp", a.addr)
 	if err != nil {
 		return err
