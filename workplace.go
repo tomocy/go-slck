@@ -31,11 +31,11 @@ func (w workplace) Listen(ctx context.Context) {
 			case deleteCmd:
 				w.delete(cmd.target)
 			case joinCmd:
-				w.join(cmd.client, cmd.channel)
+				w.join(cmd.member, cmd.channel)
 			case leaveCmd:
-				w.leave(cmd.client, cmd.channel)
+				w.leave(cmd.member, cmd.channel)
 			case channelsCmd:
-				w.listChannels(cmd.client)
+				w.listChannels(cmd.member)
 			case membersCmd:
 				w.listMembers(cmd.client)
 			case messageInChannelCmd:
@@ -85,9 +85,13 @@ func (w *workplace) leave(m member, chName channelName) {
 	ch.leave(m)
 }
 
-func (w *workplace) listChannels(c Client) {
+func (w *workplace) listChannels(m member) {
 	for n := range w.channels {
-		fmt.Fprintln(c.conn, n)
+		msg := msg{
+			sender:  memberWorkspalce,
+			subject: m,
+		}
+		fmt.Fprint(msg, n)
 	}
 }
 

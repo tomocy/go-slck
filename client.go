@@ -158,8 +158,13 @@ func (c Client) leave(args []byte) error {
 }
 
 func (c Client) channels() error {
+	m, err := c.member()
+	if err != nil {
+		return fmt.Errorf("failed to get current context: %w", err)
+	}
+
 	c.cmds <- channelsCmd{
-		client: c,
+		member: m,
 	}
 
 	return nil
