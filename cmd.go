@@ -70,7 +70,7 @@ func (c *rawMessageCmd) Scan(state fmt.ScanState, _ rune) error {
 }
 
 type registerCmd struct {
-	client Client
+	target member
 }
 
 func (c registerCmd) command() {}

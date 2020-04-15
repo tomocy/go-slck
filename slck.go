@@ -47,6 +47,12 @@ func (m msg) Write(body []byte) (int, error) {
 	return fmt.Fprintf(m.subject, "%s: %s\n", m.sender.name, body)
 }
 
+var (
+	memberWorkspalce = member{
+		name: "workplace",
+	}
+)
+
 type member struct {
 	name username
 	conn net.Conn

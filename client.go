@@ -95,8 +95,13 @@ func (c *Client) register(args []byte) error {
 
 	c.as = name
 
+	m, err := c.member()
+	if err != nil {
+		return fmt.Errorf("failed to get current context: %w", err)
+	}
+
 	c.cmds <- registerCmd{
-		client: *c,
+		target: m,
 	}
 
 	return nil

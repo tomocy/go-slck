@@ -8,14 +8,14 @@ import (
 func NewWorkplace(cmds <-chan Command) *workplace {
 	return &workplace{
 		channels: make(map[string]channel),
-		members:  make(map[string]Client),
+		members:  make(map[username]member),
 		cmds:     cmds,
 	}
 }
 
 type workplace struct {
 	channels map[string]channel
-	members  map[string]Client
+	members  map[username]member
 	cmds     <-chan Command
 }
 
@@ -27,7 +27,7 @@ func (w workplace) Listen(ctx context.Context) {
 		case cmd := <-w.cmds:
 			switch cmd := cmd.(type) {
 			case registerCmd:
-				w.register(cmd.client)
+				w.register(cmd.target)
 			case deleteCmd:
 				w.delete(cmd.client)
 			case joinCmd:
@@ -47,13 +47,13 @@ func (w workplace) Listen(ctx context.Context) {
 	}
 }
 
-func (w *workplace) register(c Client) {
-	if _, ok := w.members[c.username]; ok {
-		c.err(fmt.Sprintf("%s username is already taken", c.username))
+func (w *workplace) register(m member) {
+	if _, ok := w.members[m.name]; ok {
+		w.err(m, fmt.Sprintf("%s username is already taken", m.name))
 		return
 	}
 
-	w.members[c.username] = c
+	w.members[m.name] = m
 }
 
 func (w *workplace) delete(cli Client) {
@@ -110,4 +110,12 @@ func (w *workplace) sendDirectMessage(s Client, r string, body []byte) {
 	}
 
 	fmt.Fprintf(m.conn, "%s: %s\n", s.username, body)
+}
+
+func (w *workplace) err(subject member, body string) {
+	msg := msg{
+		sender:  memberWorkspalce,
+		subject: subject,
+	}
+	fmt.Fprintf(msg, "%s %s", commandErr, body)
 }
