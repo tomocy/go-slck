@@ -31,6 +31,7 @@ type command struct {
 
 type rawCommand struct {
 	kind string
+	args []byte
 }
 
 type commandKind string
