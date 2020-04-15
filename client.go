@@ -108,8 +108,10 @@ func (c *Client) register(args []byte) error {
 }
 
 func (c *Client) delete() error {
+	m, _ := c.member()
+
 	c.cmds <- deleteCmd{
-		client: *c,
+		target: m,
 	}
 
 	c.as = ""
