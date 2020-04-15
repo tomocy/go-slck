@@ -29,7 +29,7 @@ func (w workplace) Listen(ctx context.Context) {
 			case registerCmd:
 				w.register(cmd.target)
 			case deleteCmd:
-				w.delete(cmd.client)
+				w.delete(cmd.target)
 			case joinCmd:
 				w.join(cmd.client, cmd.channel)
 			case leaveCmd:
@@ -56,10 +56,10 @@ func (w *workplace) register(m member) {
 	w.members[m.name] = m
 }
 
-func (w *workplace) delete(cli Client) {
-	delete(w.members, cli.username)
+func (w *workplace) delete(m member) {
+	delete(w.members, m.name)
 	for _, c := range w.channels {
-		delete(c.members, cli.username)
+		c.leave(m)
 	}
 }
 
@@ -67,7 +67,7 @@ func (w *workplace) join(c Client, chName string) {
 	if _, ok := w.channels[chName]; !ok {
 		w.channels[chName] = channel{
 			name:    chName,
-			members: make(map[string]Client),
+			members: make(map[username]member),
 		}
 	}
 

@@ -7,7 +7,7 @@ import (
 
 type channel struct {
 	name    string
-	members map[string]member
+	members map[username]member
 }
 
 func (c channel) broadcast(sender member, body []byte) {
@@ -20,6 +20,10 @@ func (c channel) broadcast(sender member, body []byte) {
 		}
 		msg.Write(body)
 	}
+}
+
+func (c *channel) leave(m member) {
+	delete(c.members, m.name)
 }
 
 type channelName string
