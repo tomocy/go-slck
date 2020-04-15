@@ -77,6 +77,7 @@ type Client struct {
 	username   string
 	registered chan<- Client
 	deleted    chan<- Client
+	commands   chan<- command
 }
 
 func (c Client) Listen(ctx context.Context) {
