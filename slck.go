@@ -271,22 +271,37 @@ func (c Client) message(args []byte) error {
 		return fmt.Errorf("failed to scan command: %w", err)
 	}
 
-	if cmd.target[0] != '#' {
-		return fmt.Errorf("invalid target format: format should start either @ or #: %s", cmd.target)
+	if cmd.target[0] == '#' {
+		ch := channelName(cmd.target)
+		if err := ch.validate(); err != nil {
+			return fmt.Errorf("invalid channel name: %w", err)
+		}
+
+		c.cmds <- messageInChannelCmd{
+			sender:  c,
+			channel: string(ch),
+			body:    cmd.body,
+		}
+
+		return nil
 	}
 
-	ch := channelName(cmd.target)
-	if err := ch.validate(); err != nil {
-		return fmt.Errorf("invalid channel name: %w", err)
+	if cmd.target[0] == '@' {
+		uname := username(cmd.target)
+		if err := uname.validate(); err != nil {
+			return fmt.Errorf("invalid channel name: %w", err)
+		}
+
+		c.cmds <- directMessageCmd{
+			sender:     c,
+			receipient: string(uname),
+			body:       cmd.body,
+		}
+
+		return nil
 	}
 
-	c.cmds <- messageInChannelCmd{
-		sender:  c,
-		channel: string(ch),
-		body:    cmd.body,
-	}
-
-	return nil
+	return fmt.Errorf("invalid target format: format should start either @ or #: %s", cmd.target)
 }
 
 func (c Client) err(msg string) {
@@ -308,6 +323,22 @@ func (n channelName) validate() error {
 	}
 	if n[1:] == "" {
 		return fmt.Errorf("name exluding # is empty")
+	}
+
+	return nil
+}
+
+type username string
+
+func (n username) validate() error {
+	if n == "" {
+		return fmt.Errorf("name is empty")
+	}
+	if n[0] != '@' {
+		return fmt.Errorf("name does not start with @")
+	}
+	if n[1:] == "" {
+		return fmt.Errorf("name exluding @ is empty")
 	}
 
 	return nil
@@ -425,7 +456,7 @@ func (c messageInChannelCmd) command() {}
 
 type directMessageCmd struct {
 	sender     Client
-	receipient Client
+	receipient string
 	body       []byte
 }
 
