@@ -28,6 +28,10 @@ func (c client) handle(cmd rawCommand) {
 	}
 }
 
+func (c client) err(msg string) {
+	fmt.Fprintf(c.conn, "%s %s\n", commandErr, msg)
+}
+
 type command struct {
 	kind       commandKind
 	sender     string
