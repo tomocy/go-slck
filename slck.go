@@ -19,6 +19,12 @@ func (c channel) broadcast(sender string, body []byte) {
 	}
 }
 
+func NewClient(conn net.Conn) *client {
+	return &client{
+		conn: conn,
+	}
+}
+
 type client struct {
 	conn     net.Conn
 	username string
