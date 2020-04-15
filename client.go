@@ -195,6 +195,17 @@ func (c Client) message(args []byte) error {
 	return fmt.Errorf("invalid target format: format should start either @ or #: %s", cmd.target)
 }
 
+func (c Client) member() (member, error) {
+	if c.as == "" {
+		return member{}, fmt.Errorf("no session is available")
+	}
+
+	return member{
+		name: c.as,
+		conn: c.conn,
+	}, nil
+}
+
 func (c Client) ok() {
 	c.printf("%s\n", commandOK)
 }
