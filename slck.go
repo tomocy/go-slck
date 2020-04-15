@@ -200,3 +200,5 @@ func (c registerCmd) command() {}
 type deleteCmd struct {
 	client Client
 }
+
+func (c deleteCmd) command() {}
