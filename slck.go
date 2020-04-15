@@ -4,6 +4,7 @@ type command struct {
 	kind       commandKind
 	sender     string
 	receipient string
+	body       []byte
 }
 
 type commandKind string
