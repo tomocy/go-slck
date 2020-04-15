@@ -29,6 +29,8 @@ func (w workplace) Listen(ctx context.Context) {
 			switch cmd := cmd.(type) {
 			case registerCmd:
 				w.register(cmd.client)
+			case deleteCmd:
+				w.delete(cmd.client)
 			}
 		}
 	}
