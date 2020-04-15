@@ -171,8 +171,13 @@ func (c Client) channels() error {
 }
 
 func (c Client) members() error {
+	m, err := c.member()
+	if err != nil {
+		return fmt.Errorf("failed to get current context: %w", err)
+	}
+
 	c.cmds <- membersCmd{
-		client: c,
+		member: m,
 	}
 
 	return nil

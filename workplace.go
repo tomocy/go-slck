@@ -37,7 +37,7 @@ func (w workplace) Listen(ctx context.Context) {
 			case channelsCmd:
 				w.listChannels(cmd.member)
 			case membersCmd:
-				w.listMembers(cmd.client)
+				w.listMembers(cmd.member)
 			case messageInChannelCmd:
 				w.sendMessageInChannel(cmd.sender, cmd.channel, cmd.body)
 			case directMessageCmd:
@@ -95,9 +95,13 @@ func (w *workplace) listChannels(m member) {
 	}
 }
 
-func (w *workplace) listMembers(c Client) {
+func (w *workplace) listMembers(m member) {
 	for n := range w.members {
-		fmt.Fprintln(c.conn, n)
+		msg := msg{
+			sender:  memberWorkspalce,
+			subject: m,
+		}
+		fmt.Fprint(msg, n)
 	}
 }
 

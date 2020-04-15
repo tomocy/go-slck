@@ -102,7 +102,7 @@ type channelsCmd struct {
 func (c channelsCmd) command() {}
 
 type membersCmd struct {
-	client Client
+	member member
 }
 
 func (c membersCmd) command() {}
