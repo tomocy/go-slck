@@ -197,4 +197,6 @@ type registerCmd struct {
 
 func (c registerCmd) command() {}
 
-type deleteCmd struct{}
+type deleteCmd struct {
+	client Client
+}
