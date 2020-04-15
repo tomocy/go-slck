@@ -25,6 +25,8 @@ type client struct {
 
 func (c client) handle(cmd rawCommand) {
 	switch cmd.kind {
+	default:
+		c.err(fmt.Sprintf("unknown command: %s", cmd.kind))
 	}
 }
 
