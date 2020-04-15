@@ -158,11 +158,8 @@ func (c Client) printf(format string, as ...interface{}) {
 	fmt.Fprintf(c.conn, format, as...)
 }
 
-type Command struct {
-	kind       commandKind
-	sender     string
-	receipient string
-	body       []byte
+type Command interface {
+	command()
 }
 
 type rawCommand struct {
