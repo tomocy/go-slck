@@ -1,6 +1,7 @@
 package slck
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net"
@@ -21,6 +22,22 @@ func (c channel) broadcast(sender string, body []byte) {
 type client struct {
 	conn     net.Conn
 	username string
+}
+
+func (c client) listen(ctx context.Context) error {
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		default:
+			var cmd rawCommand
+			if _, err := fmt.Fscanf(c.conn, "%v\n", &cmd); err != nil {
+				return fmt.Errorf("failed to scan command: %w", err)
+			}
+
+			c.handle(cmd)
+		}
+	}
 }
 
 func (c client) handle(cmd rawCommand) {
