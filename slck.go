@@ -30,7 +30,7 @@ type client struct {
 	username string
 }
 
-func (c client) listen(ctx context.Context) {
+func (c client) Listen(ctx context.Context) {
 	for {
 		select {
 		case <-ctx.Done():
