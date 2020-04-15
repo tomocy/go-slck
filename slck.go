@@ -9,8 +9,9 @@ import (
 
 func NewWorkplace(cmds <-chan Command) *workplace {
 	return &workplace{
-		members: make(map[string]Client),
-		cmds:    cmds,
+		channels: make(map[string]channel),
+		members:  make(map[string]Client),
+		cmds:     cmds,
 	}
 }
 
@@ -31,6 +32,8 @@ func (w workplace) Listen(ctx context.Context) {
 				w.register(cmd.client)
 			case deleteCmd:
 				w.delete(cmd.client)
+			case joinCmd:
+				w.join(cmd.client, cmd.channel)
 			}
 		}
 	}
@@ -50,6 +53,17 @@ func (w *workplace) delete(cli Client) {
 	for _, c := range w.channels {
 		delete(c.members, cli.username)
 	}
+}
+
+func (w *workplace) join(c Client, chName string) {
+	if _, ok := w.channels[chName]; !ok {
+		w.channels[chName] = channel{
+			name:    chName,
+			members: make(map[string]Client),
+		}
+	}
+
+	w.channels[chName].members[c.username] = c
 }
 
 type channel struct {
