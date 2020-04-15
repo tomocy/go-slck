@@ -60,7 +60,10 @@ func (a app) listenAndServe(ctx context.Context) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	registered := make(chan slck.Client)
+	var (
+		registered = make(chan slck.Client)
+		deleted    = make(chan slck.Client)
+	)
 
 	for {
 		select {
@@ -72,7 +75,7 @@ func (a app) listenAndServe(ctx context.Context) error {
 				return fmt.Errorf("failed to accept connection: %w", err)
 			}
 
-			cli := slck.NewClient(conn, registered)
+			cli := slck.NewClient(conn, registered, deleted)
 			go cli.Listen(ctx)
 		}
 	}
