@@ -51,6 +51,10 @@ func (c client) err(msg string) {
 	fmt.Fprintf(c.conn, "%s %s\n", commandErr, msg)
 }
 
+func (c client) printf(format string, as ...interface{}) {
+	fmt.Fprintf(c.conn, format, as...)
+}
+
 type command struct {
 	kind       commandKind
 	sender     string
