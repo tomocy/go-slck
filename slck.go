@@ -19,7 +19,7 @@ func (c channel) broadcast(sender string, body []byte) {
 	}
 }
 
-func NewClient(conn net.Conn) *Client {
+func NewClient(conn net.Conn, registered chan<- Client) *Client {
 	return &Client{
 		conn: conn,
 	}

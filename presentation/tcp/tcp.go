@@ -60,6 +60,8 @@ func (a app) listenAndServe(ctx context.Context) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
+	registered := make(chan slck.Client)
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -70,7 +72,7 @@ func (a app) listenAndServe(ctx context.Context) error {
 				return fmt.Errorf("failed to accept connection: %w", err)
 			}
 
-			cli := slck.NewClient(conn)
+			cli := slck.NewClient(conn, registered)
 			go cli.Listen(ctx)
 		}
 	}
