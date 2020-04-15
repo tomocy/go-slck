@@ -109,6 +109,10 @@ func (c *Client) register(args []byte) error {
 		return err
 	}
 
+	c.cmds <- registerCmd{
+		client: *c,
+	}
+
 	return nil
 }
 
