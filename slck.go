@@ -14,6 +14,16 @@ type workplace struct {
 	registeredClients <-chan Client
 	deletedClients    <-chan Client
 }
+
+func (w workplace) Listen(ctx context.Context) {
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		}
+	}
+}
+
 type channel struct {
 	name    string
 	members map[string]Client
