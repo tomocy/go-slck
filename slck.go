@@ -21,7 +21,8 @@ func (c channel) broadcast(sender string, body []byte) {
 
 func NewClient(conn net.Conn, registered chan<- Client) *Client {
 	return &Client{
-		conn: conn,
+		conn:       conn,
+		registered: registered,
 	}
 }
 
@@ -51,9 +52,25 @@ func (c Client) Listen(ctx context.Context) {
 
 func (c Client) handle(cmd rawCommand) {
 	switch cmd.kind {
+	case commandRegister:
+		if err := c.register(cmd.args); err != nil {
+			c.err(fmt.Sprintf("failed to register: %s", err))
+		}
 	default:
 		c.err(fmt.Sprintf("unknown command: %s", cmd.kind))
 	}
+}
+
+func (c *Client) register(args []byte) error {
+	name := string(args)
+
+	if err := c.setUsername(name); err != nil {
+		return err
+	}
+
+	c.registered <- *c
+
+	return nil
 }
 
 func (c *Client) setUsername(name string) error {
