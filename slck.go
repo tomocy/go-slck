@@ -29,7 +29,9 @@ type command struct {
 	body       []byte
 }
 
-type rawCommand struct{}
+type rawCommand struct {
+	kind string
+}
 
 type commandKind string
 
