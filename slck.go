@@ -1,5 +1,7 @@
 package slck
 
+type channel struct{}
+
 type command struct {
 	kind       commandKind
 	sender     string
