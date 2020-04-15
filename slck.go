@@ -162,31 +162,46 @@ func (c *Client) handle(cmd rawCmd) {
 	case commandRegister:
 		if err := c.register(cmd.args); err != nil {
 			c.err(fmt.Sprintf("failed to register: %s", err))
+			return
 		}
+
+		c.ok()
 	case commandDelete:
 		if err := c.delete(); err != nil {
 			c.err(fmt.Sprintf("failed to delete: %s", err))
 		}
+
+		c.ok()
 	case commandJoin:
 		if err := c.join(cmd.args); err != nil {
 			c.err(fmt.Sprintf("failed to join: %s", err))
 		}
+
+		c.ok()
 	case commandLeave:
 		if err := c.leave(cmd.args); err != nil {
 			c.err(fmt.Sprintf("failed to leave: %s", err))
 		}
+
+		c.ok()
 	case commandChannels:
 		if err := c.channels(); err != nil {
 			c.err(fmt.Sprintf("failed to list channels: %s", err))
 		}
+
+		c.ok()
 	case commandMembers:
 		if err := c.members(); err != nil {
 			c.err(fmt.Sprintf("failed to list members: %s", err))
 		}
+
+		c.ok()
 	case commandMessage:
 		if err := c.message(cmd.args); err != nil {
 			c.err(fmt.Sprintf("failed to send message: %s", err))
 		}
+
+		c.ok()
 	default:
 		c.err(fmt.Sprintf("unknown command: %s", cmd.kind))
 	}
