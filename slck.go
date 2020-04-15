@@ -298,3 +298,7 @@ type leaveCmd struct {
 }
 
 func (c leaveCmd) command() {}
+
+type channelsCmd struct{}
+
+func (c channelsCmd) command() {}
