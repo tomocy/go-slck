@@ -12,6 +12,7 @@ type workplace struct {
 	members           map[string]Client
 	commands          <-chan command
 	registeredClients <-chan Client
+	deletedClients    <-chan Client
 }
 
 type channel struct {
