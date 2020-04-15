@@ -38,6 +38,8 @@ func (w workplace) Listen(ctx context.Context) {
 				w.leave(cmd.client, cmd.channel)
 			case channelsCmd:
 				w.listChannels(cmd.client)
+			case membersCmd:
+				w.listMembers(cmd.client)
 			}
 		}
 	}
@@ -80,6 +82,12 @@ func (w *workplace) leave(c Client, chName string) {
 
 func (w *workplace) listChannels(c Client) {
 	for n := range w.channels {
+		fmt.Fprintln(c.conn, n)
+	}
+}
+
+func (w *workplace) listMembers(c Client) {
+	for n := range w.members {
 		fmt.Fprintln(c.conn, n)
 	}
 }
@@ -235,7 +243,7 @@ func (c Client) channels() error {
 }
 
 func (c Client) members() error {
-	c.cmds <- channelsCmd{
+	c.cmds <- membersCmd{
 		client: c,
 	}
 
