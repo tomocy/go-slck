@@ -20,8 +20,19 @@ func (w workplace) Listen(ctx context.Context) {
 		select {
 		case <-ctx.Done():
 			return
+		case c := <-w.registeredClients:
+			w.register(c)
 		}
 	}
+}
+
+func (w *workplace) register(c Client) {
+	if _, ok := w.members[c.username]; ok {
+		c.err(fmt.Sprintf("%s username is already taken", c.username))
+		return
+	}
+
+	w.members[c.username] = c
 }
 
 type channel struct {
