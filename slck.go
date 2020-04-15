@@ -137,6 +137,10 @@ func (c *Client) handle(cmd rawCmd) {
 		if err := c.leave(cmd.args); err != nil {
 			c.err(fmt.Sprintf("failed to leave: %s", err))
 		}
+	case commandChannels:
+		if err := c.channels(); err != nil {
+			c.err(fmt.Sprintf("failed to list channels: %s", err))
+		}
 	default:
 		c.err(fmt.Sprintf("unknown command: %s", cmd.kind))
 	}
@@ -205,6 +209,14 @@ func (c Client) leave(args []byte) error {
 	c.cmds <- leaveCmd{
 		client:  c,
 		channel: string(ch),
+	}
+
+	return nil
+}
+
+func (c Client) channels() error {
+	c.cmds <- channelsCmd{
+		client: c,
 	}
 
 	return nil
