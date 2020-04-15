@@ -263,3 +263,7 @@ type joinCmd struct {
 }
 
 func (c joinCmd) command() {}
+
+type leaveCmd struct{}
+
+func (c leaveCmd) command() {}
