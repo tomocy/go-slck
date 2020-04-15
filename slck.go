@@ -299,6 +299,8 @@ type leaveCmd struct {
 
 func (c leaveCmd) command() {}
 
-type channelsCmd struct{}
+type channelsCmd struct {
+	client Client
+}
 
 func (c channelsCmd) command() {}
