@@ -7,10 +7,11 @@ import (
 	"net"
 )
 
-func NewWorkplace(registered <-chan Client) *workplace {
+func NewWorkplace(registered <-chan Client, deleted <-chan Client) *workplace {
 	return &workplace{
 		members:           make(map[string]Client),
 		registeredClients: registered,
+		deletedClients:    deleted,
 	}
 }
 

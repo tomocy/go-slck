@@ -69,7 +69,7 @@ func (a app) listenAndServe(ctx context.Context) error {
 		close(deleted)
 	}()
 
-	w := slck.NewWorkplace(registered)
+	w := slck.NewWorkplace(registered, deleted)
 	go w.Listen(ctx)
 
 	for {
