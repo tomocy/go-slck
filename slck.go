@@ -36,6 +36,8 @@ func (w workplace) Listen(ctx context.Context) {
 				w.join(cmd.client, cmd.channel)
 			case leaveCmd:
 				w.leave(cmd.client, cmd.channel)
+			case channelsCmd:
+				w.listChannels(cmd.client)
 			}
 		}
 	}
@@ -74,6 +76,12 @@ func (w *workplace) leave(c Client, chName string) {
 	}
 
 	delete(w.channels[chName].members, c.username)
+}
+
+func (w *workplace) listChannels(c Client) {
+	for n := range w.channels {
+		fmt.Fprintln(c.conn, n)
+	}
 }
 
 type channel struct {
