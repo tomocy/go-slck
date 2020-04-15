@@ -40,6 +40,8 @@ func (w workplace) Listen(ctx context.Context) {
 				w.listChannels(cmd.client)
 			case membersCmd:
 				w.listMembers(cmd.client)
+			case messageInChannel:
+				w.sendMessageInChannel(cmd.sender, cmd.channel, cmd.body)
 			}
 		}
 	}
@@ -92,13 +94,22 @@ func (w *workplace) listMembers(c Client) {
 	}
 }
 
+func (w *workplace) sendMessageInChannel(s Client, chName string, body []byte) {
+	ch, ok := w.channels[chName]
+	if !ok {
+		return
+	}
+
+	ch.broadcast(s.username, body)
+}
+
 type channel struct {
 	name    string
 	members map[string]Client
 }
 
 func (c channel) broadcast(sender string, body []byte) {
-	msg := []byte(fmt.Sprintf("%s: %s", sender, body))
+	msg := []byte(fmt.Sprintf("%s: %s\n", sender, body))
 	for _, m := range c.members {
 		m.conn.Write(msg)
 	}
@@ -272,6 +283,7 @@ func (c Client) message(args []byte) error {
 	c.cmds <- messageInChannel{
 		sender:  c,
 		channel: string(ch),
+		body:    cmd.body,
 	}
 
 	return nil
