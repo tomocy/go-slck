@@ -9,6 +9,7 @@ import (
 
 type workplace struct {
 	channels map[string]channel
+	members  map[string]Client
 }
 
 type channel struct {
