@@ -38,6 +38,10 @@ type member struct {
 	conn net.Conn
 }
 
+func (m member) Write(src []byte) (int, error) {
+	return m.conn.Write(src)
+}
+
 type username string
 
 func (n username) validate() error {
