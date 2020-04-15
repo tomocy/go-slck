@@ -132,5 +132,5 @@ func (w *workplace) err(to member, body string) {
 		from: memberWorkspalce,
 		to:   to,
 	}
-	fmt.Fprintf(msg, "%s %s", commandErr, body)
+	fmt.Fprintf(msg, "%s %s", cmdErr, body)
 }

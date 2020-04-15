@@ -39,44 +39,44 @@ func (c Client) Listen(ctx context.Context) {
 
 func (c *Client) handle(cmd rawCmd) {
 	switch cmd.kind {
-	case commandRegister:
+	case cmdRegister:
 		if err := c.register(cmd.args); err != nil {
 			c.err(fmt.Sprintf("failed to register: %s", err))
 			return
 		}
 
 		c.ok()
-	case commandDelete:
+	case cmdDelete:
 		if err := c.delete(); err != nil {
 			c.err(fmt.Sprintf("failed to delete: %s", err))
 		}
 
 		c.ok()
-	case commandJoin:
+	case cmdJoin:
 		if err := c.join(cmd.args); err != nil {
 			c.err(fmt.Sprintf("failed to join: %s", err))
 		}
 
 		c.ok()
-	case commandLeave:
+	case cmdLeave:
 		if err := c.leave(cmd.args); err != nil {
 			c.err(fmt.Sprintf("failed to leave: %s", err))
 		}
 
 		c.ok()
-	case commandChannels:
+	case cmdChannels:
 		if err := c.channels(); err != nil {
 			c.err(fmt.Sprintf("failed to list channels: %s", err))
 		}
 
 		c.ok()
-	case commandMembers:
+	case cmdMembers:
 		if err := c.members(); err != nil {
 			c.err(fmt.Sprintf("failed to list members: %s", err))
 		}
 
 		c.ok()
-	case commandMessage:
+	case cmdSend:
 		if err := c.message(cmd.args); err != nil {
 			c.err(fmt.Sprintf("failed to send message: %s", err))
 		}
@@ -239,11 +239,11 @@ func (c Client) member() (member, error) {
 }
 
 func (c Client) ok() {
-	c.printf("%s\n", commandOK)
+	c.printf("%s\n", cmdOK)
 }
 
 func (c Client) err(msg string) {
-	c.printf("%s %s\n", commandErr, msg)
+	c.printf("%s %s\n", cmdErr, msg)
 }
 
 func (c Client) printf(format string, as ...interface{}) {

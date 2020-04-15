@@ -33,15 +33,15 @@ func (c *rawCmd) Scan(state fmt.ScanState, _ rune) error {
 type cmdKind string
 
 const (
-	commandRegister cmdKind = "REGISTER"
-	commandDelete   cmdKind = "DELETE"
-	commandJoin     cmdKind = "JOIN"
-	commandLeave    cmdKind = "LEAVE"
-	commandChannels cmdKind = "CHANNELS"
-	commandMembers  cmdKind = "MEMBERS"
-	commandMessage  cmdKind = "MESSAGE"
-	commandOK       cmdKind = "OK"
-	commandErr      cmdKind = "ERR"
+	cmdRegister cmdKind = "REGISTER"
+	cmdDelete   cmdKind = "DELETE"
+	cmdJoin     cmdKind = "JOIN"
+	cmdLeave    cmdKind = "LEAVE"
+	cmdChannels cmdKind = "CHANNELS"
+	cmdMembers  cmdKind = "MEMBERS"
+	cmdSend     cmdKind = "SEND"
+	cmdOK       cmdKind = "OK"
+	cmdErr      cmdKind = "ERR"
 )
 
 type rawMessageCmd struct {

@@ -6,7 +6,7 @@ import (
 )
 
 func TestRawCommand_Scan(t *testing.T) {
-	kind, args := commandJoin, []byte("alice")
+	kind, args := cmdJoin, []byte("alice")
 	src := fmt.Sprintf("%s %s", kind, args)
 
 	var cmd rawCmd
