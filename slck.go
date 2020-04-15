@@ -4,6 +4,8 @@ type channel struct {
 	name string
 }
 
+type client struct{}
+
 type command struct {
 	kind       commandKind
 	sender     string
