@@ -30,6 +30,7 @@ type Client struct {
 	conn       net.Conn
 	username   string
 	registered chan<- Client
+	deleted    chan<- Client
 }
 
 func (c Client) Listen(ctx context.Context) {
