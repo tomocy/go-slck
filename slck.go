@@ -7,13 +7,18 @@ import (
 
 type channel struct {
 	name    string
-	members map[string]Client
+	members map[string]member
 }
 
-func (c channel) broadcast(sender string, body []byte) {
-	msg := []byte(fmt.Sprintf("%s: %s\n", sender, body))
+func (c channel) broadcast(sender member, body []byte) {
+	body = []byte(fmt.Sprintf("%s: %s\n", sender, body))
+
 	for _, m := range c.members {
-		m.conn.Write(msg)
+		msg := msg{
+			sender:  sender,
+			subject: m,
+		}
+		msg.Write(body)
 	}
 }
 
