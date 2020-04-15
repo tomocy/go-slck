@@ -76,7 +76,7 @@ func (c Client) Listen(ctx context.Context) {
 			c.err(fmt.Sprint(ctx.Err()))
 			return
 		default:
-			var cmd rawCommand
+			var cmd rawCmd
 			if _, err := fmt.Fscanf(c.conn, "%v\n", &cmd); err != nil {
 				c.err(fmt.Sprintf("failed to scan command: %s", err))
 				continue
@@ -87,7 +87,7 @@ func (c Client) Listen(ctx context.Context) {
 	}
 }
 
-func (c *Client) handle(cmd rawCommand) {
+func (c *Client) handle(cmd rawCmd) {
 	switch cmd.kind {
 	case commandRegister:
 		if err := c.register(cmd.args); err != nil {
@@ -146,12 +146,12 @@ type Command interface {
 	command()
 }
 
-type rawCommand struct {
+type rawCmd struct {
 	kind commandKind
 	args []byte
 }
 
-func (c *rawCommand) Scan(state fmt.ScanState, _ rune) error {
+func (c *rawCmd) Scan(state fmt.ScanState, _ rune) error {
 	if _, err := fmt.Fscanf(state, "%s", &c.kind); err != nil {
 		return fmt.Errorf("failed to parse command: %w", err)
 	}
