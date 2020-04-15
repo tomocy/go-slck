@@ -33,6 +33,11 @@ func (n channelName) validate() error {
 	return nil
 }
 
+type msg struct {
+	sender  member
+	subject member
+}
+
 type member struct {
 	name username
 	conn net.Conn
