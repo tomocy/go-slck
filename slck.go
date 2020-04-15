@@ -213,3 +213,5 @@ type joinCmd struct {
 	client  Client
 	channel string
 }
+
+func (c joinCmd) command() {}
