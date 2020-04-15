@@ -18,7 +18,7 @@ func NewWorkplace(registered <-chan Client, deleted <-chan Client) *workplace {
 type workplace struct {
 	channels          map[string]channel
 	members           map[string]Client
-	commands          <-chan command
+	commands          <-chan Command
 	registeredClients <-chan Client
 	deletedClients    <-chan Client
 }
@@ -77,7 +77,7 @@ type Client struct {
 	username   string
 	registered chan<- Client
 	deleted    chan<- Client
-	commands   chan<- command
+	commands   chan<- Command
 }
 
 func (c Client) Listen(ctx context.Context) {
@@ -157,7 +157,7 @@ func (c Client) printf(format string, as ...interface{}) {
 	fmt.Fprintf(c.conn, format, as...)
 }
 
-type command struct {
+type Command struct {
 	kind       commandKind
 	sender     string
 	receipient string
