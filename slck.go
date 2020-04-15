@@ -184,3 +184,5 @@ const (
 type registerCmd struct {
 	client Client
 }
+
+func (c registerCmd) command() {}
