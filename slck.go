@@ -7,6 +7,13 @@ import (
 	"net"
 )
 
+func NewWorkplace(registered <-chan Client) *workplace {
+	return &workplace{
+		members:           make(map[string]Client),
+		registeredClients: registered,
+	}
+}
+
 type workplace struct {
 	channels          map[string]channel
 	members           map[string]Client

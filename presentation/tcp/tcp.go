@@ -64,6 +64,13 @@ func (a app) listenAndServe(ctx context.Context) error {
 		registered = make(chan slck.Client)
 		deleted    = make(chan slck.Client)
 	)
+	defer func() {
+		close(registered)
+		close(deleted)
+	}()
+
+	w := slck.NewWorkplace(registered)
+	go w.Listen(ctx)
 
 	for {
 		select {
