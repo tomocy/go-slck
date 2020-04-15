@@ -14,9 +14,9 @@ func NewClient(conn net.Conn, cmds chan<- Command) *Client {
 }
 
 type Client struct {
-	conn     net.Conn
-	username string
-	cmds     chan<- Command
+	conn net.Conn
+	as   username
+	cmds chan<- Command
 }
 
 func (c Client) Listen(ctx context.Context) {
@@ -88,31 +88,16 @@ func (c *Client) handle(cmd rawCmd) {
 }
 
 func (c *Client) register(args []byte) error {
-	name := string(args)
-
-	if err := c.setUsername(name); err != nil {
-		return err
+	name := username(args)
+	if err := name.validate(); err != nil {
+		return fmt.Errorf("invalid username: %w", err)
 	}
+
+	c.as = name
 
 	c.cmds <- registerCmd{
 		client: *c,
 	}
-
-	return nil
-}
-
-func (c *Client) setUsername(name string) error {
-	if name == "" {
-		return fmt.Errorf("username is empty")
-	}
-	if name[0] != '@' {
-		return fmt.Errorf("username does not start with @")
-	}
-	if name[1:] == "" {
-		return fmt.Errorf("username expluding @ is empty")
-	}
-
-	c.username = name
 
 	return nil
 }
@@ -122,7 +107,7 @@ func (c *Client) delete() error {
 		client: *c,
 	}
 
-	c.username = ""
+	c.as = ""
 
 	return nil
 }
