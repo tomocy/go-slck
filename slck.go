@@ -1,10 +1,20 @@
 package slck
 
-import "net"
+import (
+	"fmt"
+	"net"
+)
 
 type channel struct {
 	name    string
 	members map[string]client
+}
+
+func (c channel) broadcast(sender string, body []byte) {
+	msg := []byte(fmt.Sprintf("%s: %s", sender, body))
+	for m := range c.members {
+		m.conn.Write(msg)
+	}
 }
 
 type client struct {
