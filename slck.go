@@ -42,6 +42,8 @@ func (w workplace) Listen(ctx context.Context) {
 				w.listMembers(cmd.client)
 			case messageInChannelCmd:
 				w.sendMessageInChannel(cmd.sender, cmd.channel, cmd.body)
+			case directMessageCmd:
+				w.sendDirectMessage(cmd.sender, cmd.receipient, cmd.body)
 			}
 		}
 	}
@@ -101,6 +103,15 @@ func (w *workplace) sendMessageInChannel(s Client, chName string, body []byte) {
 	}
 
 	ch.broadcast(s.username, body)
+}
+
+func (w *workplace) sendDirectMessage(s Client, r string, body []byte) {
+	m, ok := w.members[r]
+	if !ok {
+		return
+	}
+
+	fmt.Fprintf(m.conn, "%s: %s\n", s.username, body)
 }
 
 type channel struct {
