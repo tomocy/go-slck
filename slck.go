@@ -14,7 +14,6 @@ type workplace struct {
 	registeredClients <-chan Client
 	deletedClients    <-chan Client
 }
-
 type channel struct {
 	name    string
 	members map[string]Client
@@ -22,7 +21,7 @@ type channel struct {
 
 func (c channel) broadcast(sender string, body []byte) {
 	msg := []byte(fmt.Sprintf("%s: %s", sender, body))
-	for m := range c.members {
+	for _, m := range c.members {
 		m.conn.Write(msg)
 	}
 }
