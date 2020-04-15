@@ -89,8 +89,8 @@ type joinCmd struct {
 func (c joinCmd) command() {}
 
 type leaveCmd struct {
-	client  Client
-	channel string
+	member  member
+	channel channelName
 }
 
 func (c leaveCmd) command() {}

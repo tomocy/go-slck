@@ -76,12 +76,13 @@ func (w *workplace) join(m member, chName channelName) {
 	ch.join(m)
 }
 
-func (w *workplace) leave(c Client, chName string) {
-	if _, ok := w.channels[chName]; !ok {
+func (w *workplace) leave(m member, chName channelName) {
+	ch, ok := w.channels[chName]
+	if !ok {
 		return
 	}
 
-	delete(w.channels[chName].members, c.username)
+	ch.leave(m)
 }
 
 func (w *workplace) listChannels(c Client) {
