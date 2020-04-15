@@ -40,7 +40,7 @@ func (w workplace) Listen(ctx context.Context) {
 				w.listChannels(cmd.client)
 			case membersCmd:
 				w.listMembers(cmd.client)
-			case messageInChannel:
+			case messageInChannelCmd:
 				w.sendMessageInChannel(cmd.sender, cmd.channel, cmd.body)
 			}
 		}
@@ -280,7 +280,7 @@ func (c Client) message(args []byte) error {
 		return fmt.Errorf("invalid channel name: %w", err)
 	}
 
-	c.cmds <- messageInChannel{
+	c.cmds <- messageInChannelCmd{
 		sender:  c,
 		channel: string(ch),
 		body:    cmd.body,
@@ -415,10 +415,18 @@ type membersCmd struct {
 
 func (c membersCmd) command() {}
 
-type messageInChannel struct {
+type messageInChannelCmd struct {
 	sender  Client
 	channel string
 	body    []byte
 }
 
-func (c messageInChannel) command() {}
+func (c messageInChannelCmd) command() {}
+
+type directMessageCmd struct {
+	sender     Client
+	receipient Client
+	body       []byte
+}
+
+func (c directMessageCmd) command() {}
