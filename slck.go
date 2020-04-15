@@ -24,15 +24,17 @@ type client struct {
 	username string
 }
 
-func (c client) listen(ctx context.Context) error {
+func (c client) listen(ctx context.Context) {
 	for {
 		select {
 		case <-ctx.Done():
-			return ctx.Err()
+			c.err(fmt.Sprint(ctx.Err()))
+			return
 		default:
 			var cmd rawCommand
 			if _, err := fmt.Fscanf(c.conn, "%v\n", &cmd); err != nil {
-				return fmt.Errorf("failed to scan command: %w", err)
+				c.err(fmt.Sprintf("failed to scan command: %s", err))
+				continue
 			}
 
 			c.handle(cmd)
@@ -48,7 +50,7 @@ func (c client) handle(cmd rawCommand) {
 }
 
 func (c client) err(msg string) {
-	fmt.Fprintf(c.conn, "%s %s\n", commandErr, msg)
+	c.printf("%s %s\n", commandErr, msg)
 }
 
 func (c client) printf(format string, as ...interface{}) {
