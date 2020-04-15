@@ -180,3 +180,5 @@ const (
 	commandOK       cmdKind = "OK"
 	commandErr      cmdKind = "ERR"
 )
+
+type registerCmd struct{}
