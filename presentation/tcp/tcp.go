@@ -15,6 +15,19 @@ type app struct {
 	addr string
 }
 
+func (a app) Run(args []string) error {
+	if err := a.parseFlags(args); err != nil {
+		return fmt.Errorf("failed to parse flags: %w", err)
+	}
+
+	ctx := context.TODO()
+	if err := a.listenAndServe(ctx); err != nil {
+		return fmt.Errorf("failed to listen and serve: %w", err)
+	}
+
+	return nil
+}
+
 func (a *app) parseFlags(args []string) error {
 	if len(args) < 1 {
 		return fmt.Errorf("too less arguments")
