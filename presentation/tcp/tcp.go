@@ -10,6 +10,12 @@ import (
 	"github.com/tomocy/slck"
 )
 
+func New(w io.Writer) *app {
+	return &app{
+		w: w,
+	}
+}
+
 type app struct {
 	w    io.Writer
 	addr string
