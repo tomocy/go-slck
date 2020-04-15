@@ -123,6 +123,10 @@ func (c *Client) handle(cmd rawCmd) {
 		if err := c.join(cmd.args); err != nil {
 			c.err(fmt.Sprintf("failed to join: %s", err))
 		}
+	case commandLeave:
+		if err := c.leave(cmd.args); err != nil {
+			c.err(fmt.Sprintf("failed to leave: %s", err))
+		}
 	default:
 		c.err(fmt.Sprintf("unknown command: %s", cmd.kind))
 	}
@@ -175,6 +179,20 @@ func (c Client) join(args []byte) error {
 	}
 
 	c.cmds <- joinCmd{
+		client:  c,
+		channel: string(ch),
+	}
+
+	return nil
+}
+
+func (c Client) leave(args []byte) error {
+	ch := channelName(args)
+	if err := ch.validate(); err != nil {
+		return fmt.Errorf("invalid channel name: %w", err)
+	}
+
+	c.cmds <- leaveCmd{
 		client:  c,
 		channel: string(ch),
 	}
