@@ -108,17 +108,17 @@ type membersCmd struct {
 func (c membersCmd) command() {}
 
 type messageInChannelCmd struct {
-	sender  member
-	channel channelName
-	body    []byte
+	from member
+	in   channelName
+	body []byte
 }
 
 func (c messageInChannelCmd) command() {}
 
 type directMessageCmd struct {
-	sender     member
-	receipient username
-	body       []byte
+	from member
+	to   username
+	body []byte
 }
 
 func (c directMessageCmd) command() {}

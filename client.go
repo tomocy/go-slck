@@ -201,9 +201,9 @@ func (c Client) message(args []byte) error {
 		}
 
 		c.cmds <- messageInChannelCmd{
-			sender:  m,
-			channel: ch,
-			body:    cmd.body,
+			from: m,
+			in:   ch,
+			body: cmd.body,
 		}
 
 		return nil
@@ -216,9 +216,9 @@ func (c Client) message(args []byte) error {
 		}
 
 		c.cmds <- directMessageCmd{
-			sender:     m,
-			receipient: uname,
-			body:       cmd.body,
+			from: m,
+			to:   uname,
+			body: cmd.body,
 		}
 
 		return nil

@@ -7,7 +7,7 @@ import (
 
 func NewWorkplace(cmds <-chan Command) *workplace {
 	return &workplace{
-		channels: make(map[string]channel),
+		channels: make(map[channelName]channel),
 		members:  make(map[username]member),
 		cmds:     cmds,
 	}
@@ -39,9 +39,9 @@ func (w workplace) Listen(ctx context.Context) {
 			case membersCmd:
 				w.listMembers(cmd.member)
 			case messageInChannelCmd:
-				w.sendMessageInChannel(cmd.sender, cmd.channel, cmd.body)
+				w.sendMessageInChannel(cmd.from, cmd.in, cmd.body)
 			case directMessageCmd:
-				w.sendDirectMessage(cmd.sender, cmd.receipient, cmd.body)
+				w.sendDirectMessage(cmd.from, cmd.to, cmd.body)
 			}
 		}
 	}
@@ -88,8 +88,8 @@ func (w *workplace) leave(m member, chName channelName) {
 func (w *workplace) listChannels(m member) {
 	for n := range w.channels {
 		msg := msg{
-			sender:  memberWorkspalce,
-			subject: m,
+			from: memberWorkspalce,
+			to:   m,
 		}
 		fmt.Fprint(msg, n)
 	}
@@ -98,39 +98,39 @@ func (w *workplace) listChannels(m member) {
 func (w *workplace) listMembers(m member) {
 	for n := range w.members {
 		msg := msg{
-			sender:  memberWorkspalce,
-			subject: m,
+			from: memberWorkspalce,
+			to:   m,
 		}
 		fmt.Fprint(msg, n)
 	}
 }
 
-func (w *workplace) sendMessageInChannel(sender member, chName channelName, body []byte) {
+func (w *workplace) sendMessageInChannel(from member, chName channelName, body []byte) {
 	ch, ok := w.channels[chName]
 	if !ok {
 		return
 	}
 
-	ch.broadcast(sender, body)
+	ch.broadcast(from, body)
 }
 
-func (w *workplace) sendDirectMessage(sender member, recipientName username, body []byte) {
-	recipient, ok := w.members[recipientName]
+func (w *workplace) sendDirectMessage(from member, recipientName username, body []byte) {
+	to, ok := w.members[recipientName]
 	if !ok {
 		return
 	}
 
 	msg := msg{
-		sender:  sender,
-		subject: recipient,
+		from: from,
+		to:   to,
 	}
 	msg.Write(body)
 }
 
-func (w *workplace) err(subject member, body string) {
+func (w *workplace) err(to member, body string) {
 	msg := msg{
-		sender:  memberWorkspalce,
-		subject: subject,
+		from: memberWorkspalce,
+		to:   to,
 	}
 	fmt.Fprintf(msg, "%s %s", commandErr, body)
 }

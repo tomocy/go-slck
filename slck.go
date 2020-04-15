@@ -10,13 +10,13 @@ type channel struct {
 	members map[username]member
 }
 
-func (c channel) broadcast(sender member, body []byte) {
-	body = []byte(fmt.Sprintf("%s: %s\n", sender, body))
+func (c channel) broadcast(from member, body []byte) {
+	body = []byte(fmt.Sprintf("%s: %s\n", from, body))
 
 	for _, m := range c.members {
 		msg := msg{
-			sender:  sender,
-			subject: m,
+			from: from,
+			to:   m,
 		}
 		msg.Write(body)
 	}
@@ -47,12 +47,11 @@ func (n channelName) validate() error {
 }
 
 type msg struct {
-	sender  member
-	subject member
+	from, to member
 }
 
 func (m msg) Write(body []byte) (int, error) {
-	return fmt.Fprintf(m.subject, "%s: %s\n", m.sender.name, body)
+	return fmt.Fprintf(m.to, "%s: %s\n", m.from.name, body)
 }
 
 var (
