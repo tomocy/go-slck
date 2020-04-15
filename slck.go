@@ -208,3 +208,5 @@ type deleteCmd struct {
 }
 
 func (c deleteCmd) command() {}
+
+type joinCmd struct{}
