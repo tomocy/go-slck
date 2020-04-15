@@ -147,7 +147,7 @@ type Command interface {
 }
 
 type rawCmd struct {
-	kind commandKind
+	kind cmdKind
 	args []byte
 }
 
@@ -167,16 +167,16 @@ func (c *rawCmd) Scan(state fmt.ScanState, _ rune) error {
 	return nil
 }
 
-type commandKind string
+type cmdKind string
 
 const (
-	commandRegister commandKind = "REGISTER"
-	commandDelete   commandKind = "DELETE"
-	commandJoin     commandKind = "JOIN"
-	commandLeave    commandKind = "LEAVE"
-	commandChannels commandKind = "CHANNELS"
-	commandUsers    commandKind = "USERS"
-	commandMessage  commandKind = "MESSAGE"
-	commandOK       commandKind = "OK"
-	commandErr      commandKind = "ERR"
+	commandRegister cmdKind = "REGISTER"
+	commandDelete   cmdKind = "DELETE"
+	commandJoin     cmdKind = "JOIN"
+	commandLeave    cmdKind = "LEAVE"
+	commandChannels cmdKind = "CHANNELS"
+	commandUsers    cmdKind = "USERS"
+	commandMessage  cmdKind = "MESSAGE"
+	commandOK       cmdKind = "OK"
+	commandErr      cmdKind = "ERR"
 )
