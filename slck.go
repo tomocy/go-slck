@@ -2,6 +2,7 @@ package slck
 
 import (
 	"fmt"
+	"net"
 )
 
 type channel struct {
@@ -30,6 +31,11 @@ func (n channelName) validate() error {
 	}
 
 	return nil
+}
+
+type member struct {
+	name username
+	conn net.Conn
 }
 
 type username string
