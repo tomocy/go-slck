@@ -125,9 +125,14 @@ func (c Client) join(args []byte) error {
 		return fmt.Errorf("invalid channel name: %w", err)
 	}
 
+	m, err := c.member()
+	if err != nil {
+		return fmt.Errorf("failed to get current context: %w", err)
+	}
+
 	c.cmds <- joinCmd{
-		client:  c,
-		channel: string(ch),
+		member:  m,
+		channel: ch,
 	}
 
 	return nil

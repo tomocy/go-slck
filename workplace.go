@@ -14,7 +14,7 @@ func NewWorkplace(cmds <-chan Command) *workplace {
 }
 
 type workplace struct {
-	channels map[string]channel
+	channels map[channelName]channel
 	members  map[username]member
 	cmds     <-chan Command
 }
@@ -63,15 +63,17 @@ func (w *workplace) delete(m member) {
 	}
 }
 
-func (w *workplace) join(c Client, chName string) {
-	if _, ok := w.channels[chName]; !ok {
-		w.channels[chName] = channel{
+func (w *workplace) join(m member, chName channelName) {
+	ch, ok := w.channels[chName]
+	if !ok {
+		ch = channel{
 			name:    chName,
 			members: make(map[username]member),
 		}
+		w.channels[chName] = ch
 	}
 
-	w.channels[chName].members[c.username] = c
+	ch.join(m)
 }
 
 func (w *workplace) leave(c Client, chName string) {
