@@ -49,36 +49,42 @@ func (c *Client) handle(cmd rawCmd) {
 	case cmdDelete:
 		if err := c.delete(); err != nil {
 			c.err(fmt.Sprintf("failed to delete: %s", err))
+			return
 		}
 
 		c.ok()
 	case cmdJoin:
 		if err := c.join(cmd.args); err != nil {
 			c.err(fmt.Sprintf("failed to join: %s", err))
+			return
 		}
 
 		c.ok()
 	case cmdLeave:
 		if err := c.leave(cmd.args); err != nil {
 			c.err(fmt.Sprintf("failed to leave: %s", err))
+			return
 		}
 
 		c.ok()
 	case cmdChannels:
 		if err := c.channels(); err != nil {
 			c.err(fmt.Sprintf("failed to list channels: %s", err))
+			return
 		}
 
 		c.ok()
 	case cmdMembers:
 		if err := c.members(); err != nil {
 			c.err(fmt.Sprintf("failed to list members: %s", err))
+			return
 		}
 
 		c.ok()
 	case cmdSend:
 		if err := c.message(cmd.args); err != nil {
 			c.err(fmt.Sprintf("failed to send message: %s", err))
+			return
 		}
 
 		c.ok()
