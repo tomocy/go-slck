@@ -60,18 +60,10 @@ func (a app) listenAndServe(ctx context.Context) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	var (
-		registered = make(chan slck.Client)
-		deleted    = make(chan slck.Client)
-		commands   = make(chan slck.Command)
-	)
-	defer func() {
-		close(registered)
-		close(deleted)
-		close(commands)
-	}()
+	commands := make(chan slck.Command)
+	defer close(commands)
 
-	w := slck.NewWorkplace(registered, deleted)
+	w := slck.NewWorkplace(commands)
 	go w.Listen(ctx)
 
 	for {
@@ -84,7 +76,7 @@ func (a app) listenAndServe(ctx context.Context) error {
 				return fmt.Errorf("failed to accept connection: %w", err)
 			}
 
-			cli := slck.NewClient(conn, registered, deleted, commands)
+			cli := slck.NewClient(conn, commands)
 			go cli.Listen(ctx)
 		}
 	}

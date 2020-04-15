@@ -7,20 +7,16 @@ import (
 	"net"
 )
 
-func NewWorkplace(registered <-chan Client, deleted <-chan Client) *workplace {
+func NewWorkplace(cmds <-chan Command) *workplace {
 	return &workplace{
-		members:           make(map[string]Client),
-		registeredClients: registered,
-		deletedClients:    deleted,
+		members: make(map[string]Client),
 	}
 }
 
 type workplace struct {
-	channels          map[string]channel
-	members           map[string]Client
-	commands          <-chan Command
-	registeredClients <-chan Client
-	deletedClients    <-chan Client
+	channels map[string]channel
+	members  map[string]Client
+	cmds     <-chan Command
 }
 
 func (w workplace) Listen(ctx context.Context) {
@@ -28,10 +24,6 @@ func (w workplace) Listen(ctx context.Context) {
 		select {
 		case <-ctx.Done():
 			return
-		case c := <-w.registeredClients:
-			w.register(c)
-		case c := <-w.deletedClients:
-			w.delete(c)
 		}
 	}
 }
@@ -64,21 +56,17 @@ func (c channel) broadcast(sender string, body []byte) {
 	}
 }
 
-func NewClient(conn net.Conn, registered chan<- Client, deleted chan<- Client, cmds chan<- Command) *Client {
+func NewClient(conn net.Conn, cmds chan<- Command) *Client {
 	return &Client{
-		conn:       conn,
-		registered: registered,
-		deleted:    deleted,
-		commands:   cmds,
+		conn: conn,
+		cmds: cmds,
 	}
 }
 
 type Client struct {
-	conn       net.Conn
-	username   string
-	registered chan<- Client
-	deleted    chan<- Client
-	commands   chan<- Command
+	conn     net.Conn
+	username string
+	cmds     chan<- Command
 }
 
 func (c Client) Listen(ctx context.Context) {
@@ -121,8 +109,6 @@ func (c *Client) register(args []byte) error {
 		return err
 	}
 
-	c.registered <- *c
-
 	return nil
 }
 
@@ -143,8 +129,6 @@ func (c *Client) setUsername(name string) error {
 }
 
 func (c *Client) delete() error {
-	c.deleted <- *c
-
 	c.username = ""
 
 	return nil
