@@ -209,4 +209,7 @@ type deleteCmd struct {
 
 func (c deleteCmd) command() {}
 
-type joinCmd struct{}
+type joinCmd struct {
+	client  Client
+	channel string
+}
