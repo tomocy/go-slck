@@ -149,6 +149,10 @@ func (c *Client) handle(cmd rawCmd) {
 		if err := c.channels(); err != nil {
 			c.err(fmt.Sprintf("failed to list channels: %s", err))
 		}
+	case commandMembers:
+		if err := c.members(); err != nil {
+			c.err(fmt.Sprintf("failed to list members: %s", err))
+		}
 	default:
 		c.err(fmt.Sprintf("unknown command: %s", cmd.kind))
 	}
@@ -230,6 +234,14 @@ func (c Client) channels() error {
 	return nil
 }
 
+func (c Client) members() error {
+	c.cmds <- channelsCmd{
+		client: c,
+	}
+
+	return nil
+}
+
 type channelName string
 
 func (n channelName) validate() error {
@@ -287,7 +299,7 @@ const (
 	commandJoin     cmdKind = "JOIN"
 	commandLeave    cmdKind = "LEAVE"
 	commandChannels cmdKind = "CHANNELS"
-	commandUsers    cmdKind = "USERS"
+	commandMembers  cmdKind = "MEMBERS"
 	commandMessage  cmdKind = "MESSAGE"
 	commandOK       cmdKind = "OK"
 	commandErr      cmdKind = "ERR"
