@@ -7,7 +7,8 @@ type channel struct {
 }
 
 type client struct {
-	conn net.Conn
+	conn     net.Conn
+	username string
 }
 
 type command struct {
