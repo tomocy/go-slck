@@ -105,6 +105,10 @@ func (c *Client) handle(cmd rawCmd) {
 		if err := c.delete(); err != nil {
 			c.err(fmt.Sprintf("failed to delete: %s", err))
 		}
+	case commandJoin:
+		if err := c.join(cmd.args); err != nil {
+			c.err(fmt.Sprintf("failed to join: %s", err))
+		}
 	default:
 		c.err(fmt.Sprintf("unknown command: %s", cmd.kind))
 	}
@@ -146,6 +150,20 @@ func (c *Client) delete() error {
 	}
 
 	c.username = ""
+
+	return nil
+}
+
+func (c Client) join(args []byte) error {
+	ch := channelName(args)
+	if err := ch.validate(); err != nil {
+		return fmt.Errorf("invalid channel name: %w", err)
+	}
+
+	c.cmds <- joinCmd{
+		client:  c,
+		channel: string(ch),
+	}
 
 	return nil
 }
